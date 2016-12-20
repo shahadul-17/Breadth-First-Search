@@ -31,25 +31,27 @@ public class Main {
 		sourceVertex.distance = 0;
 		sourceVertex.visited = true;
 		
-		Vertex.priorityQueue.add(sourceVertex);
+		Vertex.queue.enqueue(sourceVertex);
 		scanner.close();
 		System.out.println();
 		
-		while (!Vertex.priorityQueue.isEmpty()) {
-			Vertex vertex = Vertex.priorityQueue.remove();
+		while (!Vertex.queue.isEmpty()) {
+			Vertex vertex = Vertex.queue.dequeue();
 			
-			for (Vertex tempVertex : vertices) {
-				if (tempVertex != null && !tempVertex.visited && matrix[vertex.index][tempVertex.index] == 1) {
-					tempVertex.distance = vertex.distance + 1;
-					tempVertex.parent = vertex;
-					tempVertex.visited = true;
-					
-					Vertex.priorityQueue.add(tempVertex);
-					System.out.println(tempVertex);
+			if (vertex != null) {
+				for (Vertex tempVertex : vertices) {
+					if (tempVertex != null && !tempVertex.visited && matrix[vertex.index][tempVertex.index] == 1) {
+						tempVertex.distance = vertex.distance + 1;
+						tempVertex.parent = vertex;
+						tempVertex.visited = true;
+						
+						Vertex.queue.enqueue(tempVertex);
+						System.out.println(tempVertex);
+					}
 				}
+				
+				vertex.visited = true;
 			}
-			
-			vertex.visited = true;
 		}
 	}
 	
@@ -61,18 +63,24 @@ public class Main {
 		BufferedReader bufferedReader = new BufferedReader(new FileReader("input.txt"));
 		
 		while ((text = bufferedReader.readLine()) != null) {
-			substrings = text.split("\\s+");		// "\\s+" is the regular expression for space...
-			
-			for (int i = 0; i < substrings.length; i++) {
-				indices[i] = toIndex(substrings[i].charAt(0));
-				
-				if (vertices[indices[i]] == null) {
-					vertices[indices[i]] = new Vertex();
-					vertices[indices[i]].index = indices[i];
-				}
+			if (Vertex.queue == null) {
+				Vertex.queue = new Queue(Integer.parseInt(text));
 			}
-			
-			matrix[indices[0]][indices[1]] = 1;		// directed graph...
+			else {
+				substrings = text.split("\\s+");		// "\\s+" is the regular expression for space...
+				
+				for (int i = 0; i < substrings.length; i++) {
+					indices[i] = toIndex(substrings[i].charAt(0));
+					
+					if (vertices[indices[i]] == null) {
+						vertices[indices[i]] = new Vertex();
+						vertices[indices[i]].index = indices[i];
+					}
+				}
+				
+				matrix[indices[0]][indices[1]] = 1;		// for directed graph...
+														// matrix[indices[0]][indices[1]] = matrix[indices[1]][indices[0]] = 1;		// for undirected graph...
+			}
 		}
 		
 		bufferedReader.close();
