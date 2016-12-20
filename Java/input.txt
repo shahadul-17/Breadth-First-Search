@@ -1,6 +1,10 @@
-a b
-a d
-a c
-b a
-b c
-c d
+8
+s r
+s w
+r v
+w t
+w x
+t u
+t x
+x y
+u y
